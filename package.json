@@ -1,0 +1,24 @@
+{
+  "name": "real-estate-crm",
+  "version": "0.1.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "npm run dev:web",
+    "dev:web": "npm run build --workspace @real-estate-crm/shared-types && npm run build --workspace @real-estate-crm/validation && npm run dev --workspace @real-estate-crm/web",
+    "dev:api": "npm run build --workspace @real-estate-crm/shared-types && npm run build --workspace @real-estate-crm/validation && npm run dev --workspace @real-estate-crm/api",
+    "build": "npm run build --workspace @real-estate-crm/shared-types && npm run build --workspace @real-estate-crm/validation && npm run build --workspace @real-estate-crm/web && npm run build --workspace @real-estate-crm/api",
+    "typecheck": "npm run typecheck --workspaces --if-present",
+    "pretest": "npm run build --workspace @real-estate-crm/shared-types && npm run build --workspace @real-estate-crm/validation",
+    "test": "vitest run"
+  },
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "devDependencies": {
+    "vitest": "^5.0.5"
+  }
+}

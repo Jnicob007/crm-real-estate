@@ -1,0 +1,74 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  ADMIN
+  MANAGER
+  AGENT
+}
+
+enum TaskStatus {
+  TODO
+  IN_PROGRESS
+  POSTPONED
+  COMPLETED
+}
+
+model Company {
+  id        String   @id @default(uuid()) @db.Uuid
+  name      String   @db.VarChar(200)
+  createdAt DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt DateTime @updatedAt @db.Timestamptz(3)
+
+  users User[]
+  tasks Task[]
+}
+
+model User {
+  id           String   @id @default(uuid()) @db.Uuid
+  companyId    String   @db.Uuid
+  firstName    String   @db.VarChar(100)
+  lastName     String   @db.VarChar(100)
+  email        String   @db.VarChar(320)
+  passwordHash String   @db.VarChar(255)
+  role         UserRole
+  isActive     Boolean  @default(true)
+  createdAt    DateTime @default(now()) @db.Timestamptz(3)
+  updatedAt    DateTime @updatedAt @db.Timestamptz(3)
+
+  company       Company @relation(fields: [companyId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  createdTasks  Task[]  @relation("TaskCreator")
+  assignedTasks Task[]  @relation("TaskAssignee")
+
+  // Composite uniqueness supports same-company foreign keys on both Task user relations.
+  @@unique([id, companyId])
+  @@unique([companyId, email])
+  @@index([companyId, role, isActive])
+}
+
+model Task {
+  id           String     @id @default(uuid()) @db.Uuid
+  companyId    String     @db.Uuid
+  title        String     @db.VarChar(200)
+  description  String?    @db.Text
+  status       TaskStatus @default(TODO)
+  createdById  String     @db.Uuid
+  assignedToId String?    @db.Uuid
+  dueDate      DateTime?  @db.Timestamptz(3)
+  createdAt    DateTime   @default(now()) @db.Timestamptz(3)
+  updatedAt    DateTime   @updatedAt @db.Timestamptz(3)
+
+  company  Company @relation(fields: [companyId], references: [id], onDelete: Restrict, onUpdate: Cascade)
+  createdBy User    @relation("TaskCreator", fields: [createdById, companyId], references: [id, companyId], onDelete: Restrict, onUpdate: Cascade)
+  assignee  User?   @relation("TaskAssignee", fields: [assignedToId, companyId], references: [id, companyId], onDelete: Restrict, onUpdate: Cascade)
+
+  @@index([companyId, status, dueDate])
+  @@index([companyId, assignedToId, status])
+  @@index([companyId, createdById])
+}

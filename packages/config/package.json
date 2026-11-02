@@ -1,0 +1,8 @@
+{
+  "name": "@real-estate-crm/config",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "exports": {},
+  "description": "Boundary for shared tooling configuration as the workspace grows."
+}

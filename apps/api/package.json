@@ -1,0 +1,35 @@
+{
+  "name": "@real-estate-crm/api",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "tsx --env-file-if-exists=../../.env watch src/server.ts",
+    "predev": "npm run prisma:generate",
+    "build": "tsc -p tsconfig.json",
+    "prebuild": "npm run prisma:generate",
+    "typecheck": "tsc --noEmit -p tsconfig.json && tsc --noEmit -p tsconfig.test.json",
+    "pretypecheck": "npm run prisma:generate",
+    "prisma:generate": "prisma generate --config prisma7.config.ts",
+    "prisma:validate": "prisma validate --config prisma7.config.ts"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "^7.10.1",
+    "@prisma/client": "^7.10.1",
+    "@real-estate-crm/shared-types": "*",
+    "@real-estate-crm/validation": "*",
+    "argon2": "^0.45.1",
+    "express": "^5.1.0",
+    "express-rate-limit": "^8.7.2",
+    "jose": "^6.2.15",
+    "pg": "^8.23.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.3",
+    "@types/node": "^22.16.5",
+    "@types/pg": "^8.23.1",
+    "prisma": "^7.10.1",
+    "tsx": "^4.19.2",
+    "typescript": "~5.8.3"
+  }
+}
